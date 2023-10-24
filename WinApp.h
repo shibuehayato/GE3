@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <Windows.h>
 
 // WindowsAPI
@@ -8,9 +8,9 @@ public:
 	static LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
 	void Initialize();
-	void Update();
+	bool Update();
 
-	// Œãˆ—
+	// å¾Œå‡¦ç†
 	void Finalize();
 
 	//Getter
@@ -18,11 +18,12 @@ public:
 	HINSTANCE GetHInstance() const { return w.hInstance; }
 
 public:
-	// ƒEƒBƒ“ƒhƒEƒTƒCƒY
-	static const int window_width = 1280;  // ‰¡•
-	static const int window_height = 720;  // c•
+	// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚µã‚¤ã‚º
+	static const int window_width = 1280;  // æ¨ªå¹…
+	static const int window_height = 720;  // ç¸¦å¹…
 
 private:
 	HWND hwnd;
 	WNDCLASSEX w{};
+	MSG msg{};  // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
 };
