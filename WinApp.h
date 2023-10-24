@@ -1,12 +1,12 @@
 #pragma once
+#include <Windows.h>
 
 // WindowsAPI
 class WinApp
 {
-public: // ƒƒ“ƒoŠÖ”
-	// ‰Šú‰»
-	void Initialize();
-	// XV
-	void Update();
+public: 
+	static LRESULT WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
+	void Initialize();
+	void Update();
 };
