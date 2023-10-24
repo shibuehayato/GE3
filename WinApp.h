@@ -10,6 +10,9 @@ public:
 	void Initialize();
 	void Update();
 
+	// Œãˆ—
+	void Finalize();
+
 	//Getter
 	HWND GetHwnd() const { return hwnd; }
 	HINSTANCE GetHInstance() const { return w.hInstance; }
