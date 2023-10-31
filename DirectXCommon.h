@@ -11,6 +11,10 @@ class DirectXCommon
 public:
 	void Initialize(WinApp* winApp);
 
+	// •`‰æ‘Oˆ—
+	void PreDraw();
+	// •`‰æŒãˆ—
+	void PostDraw();
 private:
 	void DeviceInitialize();
 	void CommandInitialize();
@@ -42,5 +46,7 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D12Fence> fence;
 	UINT64 fenceVal = 0;
+
+	D3D12_RESOURCE_BARRIER barrierDesc{};
 };
 
