@@ -58,7 +58,7 @@ bool WinApp::Update()
 
     // ✖ボタンで終了メッセージが来たらゲームループを抜ける
     if (msg.message == WM_QUIT) {
-        true;
+        return true;
     }
 
     return false;
