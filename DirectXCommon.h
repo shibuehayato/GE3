@@ -11,10 +11,15 @@ class DirectXCommon
 public:
 	void Initialize(WinApp* winApp);
 
+	// Getter
+	ID3D12Device* GetDevice() const { return device.Get(); }
+	ID3D12GraphicsCommandList* GetCommandList() const { return commandList.Get(); }
+
 	// ï`âÊëOèàóù
 	void PreDraw();
 	// ï`âÊå„èàóù
 	void PostDraw();
+
 private:
 	void DeviceInitialize();
 	void CommandInitialize();
@@ -23,10 +28,11 @@ private:
 	void DepthBufferInitialize();
 	void FenceInitialize();
 
+
 private:
 	WinApp* winApp = nullptr;
 
-	ComPtr<ID3D12Device> device;
+	Microsoft::WRL::ComPtr<ID3D12Device> device;
 	Microsoft::WRL::ComPtr<IDXGIFactory7> dxgiFactory;
 
 	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> commandAllocator;
@@ -38,7 +44,7 @@ private:
 
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> rtvHeap;
-	std::vector<ComPtr<ID3D12Resource>> backBuffers;
+	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> backBuffers;
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> depthBuff;
 	D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc{};
