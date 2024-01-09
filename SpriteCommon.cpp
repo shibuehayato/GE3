@@ -62,6 +62,8 @@ void SpriteCommon::Initialize(DirectXCommon* dxCommon)
 	staticSamples[0].MaxLOD = D3D12_FLOAT32_MAX;
 	staticSamples[0].ShaderRegister = 0;
 	staticSamples[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	descriptorRootSignature.pStaticSamplers = staticSamples;
+	descriptorRootSignature.NumStaticSamplers = _countof(staticSamples);
 
 	// シリアライズとしてバイナリにする
 	ComPtr<ID3D10Blob> signatureBlob;

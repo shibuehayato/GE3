@@ -108,7 +108,7 @@ void Sprite::Draw()
 void Sprite::CreateVertex()
 {
 	// VertexResource
-	vertexResource = CreateBufferResource(dxCommon_->GetDevice(), sizeof(XMFLOAT4) * 6);
+	vertexResource = CreateBufferResource(dxCommon_->GetDevice(), sizeof(VertexData) * 6);
 
 	vertexBufferView.BufferLocation = vertexResource->GetGPUVirtualAddress();
 	vertexBufferView.SizeInBytes = sizeof(VertexData) * 6;
