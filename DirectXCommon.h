@@ -21,6 +21,15 @@ public:
 	// 描画後処理
 	void PostDraw();
 
+	// スワップチェーン
+	DXGI_SWAP_CHAIN_DESC1 GetSwapChainDesc() { return swapChainDesc; }
+
+	// RTVディスク
+	D3D12_RENDER_TARGET_VIEW_DESC GetRtvDesc() { return rtvDesc; }
+
+	// SRVディスクリプタヒープ
+	ID3D12DescriptorHeap* GetSrvDescriptorHeap() { return srvDescriptorHeap.Get(); }
+
 private:
 	void DeviceInitialize();
 	void CommandInitialize();
@@ -28,6 +37,9 @@ private:
 	void RenderTargetInitialize();
 	void DepthBufferInitialize();
 	void FenceInitialize();
+
+	// ディスクリプタヒープ作成
+	ID3D12DescriptorHeap* CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescripots, bool shaderVisible);
 
 	// FPS固定初期化処理
 	void InitializeFixFPS();
@@ -62,5 +74,15 @@ private:
 
 	// 記録用時間計測の変数
 	std::chrono::steady_clock::time_point reference_;
+
+	// レンダーターゲットビューの設定
+	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
+
+	// ディスクリプタヒープ
+	// RTV(ゲーム画面を保存しておく)
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> rtvDescriptorHeap;
+	// SRV(画像などを保存しておくもの)
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap;
+
 };
 

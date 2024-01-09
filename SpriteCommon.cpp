@@ -26,6 +26,20 @@ void SpriteCommon::Initialize(DirectXCommon* dxCommon)
 	D3D12_ROOT_SIGNATURE_DESC descriptorRootSignature{};
 	descriptorRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
+	// RootParameter作成
+	D3D12_ROOT_PARAMETER rootParameters[2]{};
+	// 色
+	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	rootParameters[0].Descriptor.ShaderRegister = 0;
+	// 行列
+	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+	rootParameters[1].Descriptor.ShaderRegister = 0;
+
+	descriptorRootSignature.pParameters = rootParameters;
+	descriptorRootSignature.NumParameters = _countof(rootParameters);
+
 	// シリアライズとしてバイナリにする
 	ComPtr<ID3D10Blob> signatureBlob;
 	ComPtr<ID3D10Blob> errorBlob;
@@ -40,11 +54,17 @@ void SpriteCommon::Initialize(DirectXCommon* dxCommon)
 	assert(SUCCEEDED(result));
 
 	// InPutLayout
-	D3D12_INPUT_ELEMENT_DESC inputElementDesc[1] = {};
+	D3D12_INPUT_ELEMENT_DESC inputElementDesc[2] = {};
 	inputElementDesc[0].SemanticName = "POSITION";
 	inputElementDesc[0].SemanticIndex = 0;
 	inputElementDesc[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	inputElementDesc[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+	
+	inputElementDesc[1].SemanticName = "TEXCOORD";
+	inputElementDesc[1].SemanticIndex = 0;
+	inputElementDesc[1].Format = DXGI_FORMAT_R32G32_FLOAT;
+	inputElementDesc[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+	
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
 	inputLayoutDesc.pInputElementDescs = inputElementDesc;
 	inputLayoutDesc.NumElements = _countof(inputElementDesc);
@@ -88,6 +108,39 @@ void SpriteCommon::Initialize(DirectXCommon* dxCommon)
 
 	result = dxCommon_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&pipelineState));
 	assert(SUCCEEDED(result));
+}
+
+DirectX::ScratchImage SpriteCommon::LoadTexture(const std::wstring& filePath)
+{
+	DirectX::ScratchImage image{};
+	HRESULT result = DirectX::LoadFromWICFile(filePath.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
+	assert(SUCCEEDED(result));
+
+	DirectX::ScratchImage mipImages{};
+	result = DirectX::GenerateMipMaps(
+		image.GetImages(), image.GetImageCount(), image.GetMetadata(),
+		DirectX::TEX_FILTER_SRGB, 0, mipImages);
+	assert(SUCCEEDED(result));
+
+	return mipImages;
+}
+
+void SpriteCommon::UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages)
+{
+	const DirectX::TexMetadata& metaData = mipImages.GetMetadata();
+
+	for (size_t mipLevel = 0; mipLevel < metaData.mipLevels; ++mipLevel) {
+		const DirectX::Image* img = mipImages.GetImage(mipLevel, 0, 0);
+
+		HRESULT result = texture->WriteToSubresource(
+			UINT(mipLevel),
+			nullptr,
+			img->pixels,
+			UINT(img->rowPitch),
+			UINT(img->slicePitch)
+		);
+		assert(SUCCEEDED(result));
+	}
 }
 
 IDxcBlob* SpriteCommon::CompileShader(const std::wstring& filePath,
