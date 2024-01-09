@@ -26,7 +26,7 @@ void Sprite::Initialize(DirectXCommon* dxCommon, SpriteCommon* common)
 
 	// ï€ë∂ÉÅÉÇÉäÇÃèÍèäÇéwíË
 	D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU = dxCommon_->GetSrvDescriptorHeap()->GetCPUDescriptorHandleForHeapStart();
-	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU = dxCommon_->GetSrvDescriptorHeap()->GetGPUDescriptorHandleForHeapStart();
+	textureSrvHandleGPU = dxCommon_->GetSrvDescriptorHeap()->GetGPUDescriptorHandleForHeapStart();
 
 	textureSrvHandleCPU.ptr += dxCommon_->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	textureSrvHandleGPU.ptr += dxCommon_->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
@@ -99,17 +99,19 @@ void Sprite::Draw()
 	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource->GetGPUVirtualAddress());
 	// çsóÒ
 	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(1, wvpResource->GetGPUVirtualAddress());
+	// âÊëú
+	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU);
 
-	dxCommon_->GetCommandList()->DrawInstanced(3, 1, 0, 0);
+	dxCommon_->GetCommandList()->DrawInstanced(6, 1, 0, 0);
 }
 
 void Sprite::CreateVertex()
 {
 	// VertexResource
-	vertexResource = CreateBufferResource(dxCommon_->GetDevice(), sizeof(XMFLOAT4) * 3);
+	vertexResource = CreateBufferResource(dxCommon_->GetDevice(), sizeof(XMFLOAT4) * 6);
 
 	vertexBufferView.BufferLocation = vertexResource->GetGPUVirtualAddress();
-	vertexBufferView.SizeInBytes = sizeof(VertexData) * 3;
+	vertexBufferView.SizeInBytes = sizeof(VertexData) * 6;
 	vertexBufferView.StrideInBytes = sizeof(VertexData);
 
 	// í∏ì_èÓïÒ
@@ -119,11 +121,21 @@ void Sprite::CreateVertex()
 	vertexData[0].position = { -0.5f, -0.5f, 0.0f, 1.0f };
 	vertexData[0].texcoord = { 0.0f,1.0f };
 
-	vertexData[1].position = { +0.0f, +0.5f, 0.0f, 1.0f };
-	vertexData[1].texcoord = { 0.5f,0.0f };
+	vertexData[1].position = { -0.5f, +0.5f, 0.0f, 1.0f };
+	vertexData[1].texcoord = { 0.0f,0.0f };
 
 	vertexData[2].position = { +0.5f, -0.5f, 0.0f, 1.0f };
 	vertexData[2].texcoord = { 1.0f,1.0f };
+
+
+	vertexData[3].position = { -0.5f, +0.5f, 0.0f, 1.0f };
+	vertexData[3].texcoord = { 0.0f,0.0f };
+
+	vertexData[4].position = { +0.5f, +0.5f, 0.0f, 1.0f };
+	vertexData[4].texcoord = { 1.0f,0.0f };
+
+	vertexData[5].position = { +0.5f, -0.5f, 0.0f, 1.0f };
+	vertexData[5].texcoord = { 1.0f,1.0f };
 }
 
 void Sprite::CreateMaterial()
