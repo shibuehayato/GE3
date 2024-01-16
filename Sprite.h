@@ -13,6 +13,11 @@ public:
 	void Update();
 	void Draw();
 
+	//Getter/Setter
+	DirectX::XMFLOAT3 GetPosition() { return position; }
+
+	void SetPosition(DirectX::XMFLOAT3 pos) { position = pos; }
+
 private:
 	struct Transform{
 		DirectX::XMFLOAT3 scale;
@@ -69,6 +74,7 @@ private:
 	Transform uvTransform = { {1,1,1},{0,0,0},{0,0,0} };
 
 	Transform transform = { {1,1,1}, {0,0,0},{0,0,0} };
+	DirectX::XMFLOAT3 position = { 0,0,0 };
 
 	// ÉJÉÅÉâ
 	Transform cameraTransform{ {1,1,1},{0,0,0},{0,0,-5} };

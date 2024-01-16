@@ -44,7 +44,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         imgui->ShowDemo();
 
         input_->Update();
+
+        DirectX::XMFLOAT3 pos = sprite->GetPosition();
+        pos.x += 1;
+        sprite->SetPosition(pos);
         sprite->Update();
+
         // 描画前処理
         ImGuiManager::CreateCommand();
         dxCommon_->PreDraw();

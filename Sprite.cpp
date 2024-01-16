@@ -46,6 +46,8 @@ void Sprite::Initialize(DirectXCommon* dxCommon, SpriteCommon* common)
 
 void Sprite::Update()
 {
+	transform.translate = position;
+
 	ImGui::Begin("Texture");
 	ImGui::DragFloat3("Pos", &transform.translate.x, 0.1f);
 
