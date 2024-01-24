@@ -9,7 +9,7 @@
 class Sprite
 {
 public:
-	void Initialize(DirectXCommon* dxCommon, SpriteCommon* common);
+	void Initialize(DirectXCommon* dxCommon, SpriteCommon* common, std::wstring textureFilePath);
 	void Update();
 	void Draw();
 
@@ -23,6 +23,8 @@ public:
 	void SetRotation(float rot)             { rotation = rot; }
 	void SetColor(DirectX::XMFLOAT4 color)  { color_ = color; }
 	void SetSize(DirectX::XMFLOAT2 size)    { this->size = size; }
+
+	void SetTexture(std::wstring textureFilePath);
 
 private:
 	struct Transform{
@@ -81,11 +83,14 @@ private:
 	// UV座標
 	Transform uvTransform = { {1,1,1},{0,0,0},{0,0,0} };
 
-	// 自機                   Scale    Rotate  Translate
+	// 自機                   Scale   Rotate  Translate
 	Transform transform = { {1,1,1}, {0,0,0},{0,0,0} };
 	DirectX::XMFLOAT2 position = {0,0};
 	float rotation = 0;
-	DirectX::XMFLOAT2 size = { 1,1 };
+	DirectX::XMFLOAT2 size = { 512,512 };
+
+	// 画像の保存されている場所
+	uint32_t textureIndex_ = 0;
 
 	// カメラ
 	Transform cameraTransform{ {1,1,1},{0,0,0},{0,0,-5} };
